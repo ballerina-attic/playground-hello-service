@@ -12,7 +12,7 @@ endpoint http:ServiceEndpoint httpListener {
 service<http:Service> hello bind httpListener {
 
     @Description {
-        value:"Resource accepts request on path '/sayHello'."
+        value:"Resource accepts requests on path '/sayHello'."
     }
     sayHello (endpoint caller, http:Request request) {
         http:Response response = {};
