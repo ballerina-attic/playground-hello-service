@@ -6,14 +6,13 @@ endpoint http:ServiceEndpoint httpListener {
     port:9090
 };
 
-@Description {value:"Service that binds to HTTP listern with service path '/hello'."}
-@http:ServiceConfig { basePath:"/hello" }
-service<http:Service> helloService bind httpListener {
+@Description {
+    value:"Service binds to httpListener on path '/hello'."
+}
+service<http:Service> hello bind httpListener {
 
-    @Description {value:"Resource that only allows POST requests coming on path '/' "}
-    @http:ResourceConfig {
-        path:"/",
-        methods:["POST"]
+    @Description {
+        value:"Resource accepts request on path '/sayHello'."
     }
     sayHello (endpoint caller, http:Request request) {
         http:Response response = {};
