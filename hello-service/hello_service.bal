@@ -1,7 +1,7 @@
 import ballerina/net.http;
 import ballerina/io;
 
-// An endpoint is a network interface
+// A service endpoint listens to HTTP request on port 9090
 endpoint http:ServiceEndpoint listener {
     port:9090
 };

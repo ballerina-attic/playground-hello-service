@@ -1,7 +1,7 @@
 import ballerina/net.http;
 import ballerina/io;
 
-// An endpoint is a network interface
+// A service endpoint listens to HTTP request on port 9090
 endpoint http:ServiceEndpoint listener {
     port:9090
 };
@@ -19,6 +19,7 @@ service<http:Service> greeting bind listener {
     }
     greet (endpoint caller, http:Request request) {
         http:Response response = {};
+
         // Get the request payload as a string
         var reqPayloadVar = request.getStringPayload();
         match reqPayloadVar {
@@ -31,7 +32,8 @@ service<http:Service> greeting bind listener {
                 io:println("No payload found!");
             }
         }
-        // Send a response back to caller.
+        // Send a response back to caller
+        // Errors that could occur are ignored using '_'
         _ = caller -> respond(response);
     }
 }

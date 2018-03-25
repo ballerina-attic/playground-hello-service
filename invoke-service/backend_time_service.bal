@@ -15,8 +15,8 @@ service<http:Service> time bind listener {
     }
     sayHello (endpoint caller, http:Request request) {
         http:Response response = {};
-        time:Time time2 = time:currentTime();
-        string customTimeString = time2.format("yyyy-MM-dd'T'HH:mm:ss");
+        time:Time currentTime = time:currentTime();
+        string customTimeString = currentTime.format("yyyy-MM-dd'T'HH:mm:ss");
 
         json timeJ = {currentTime : customTimeString };
         response.setJsonPayload(timeJ);
