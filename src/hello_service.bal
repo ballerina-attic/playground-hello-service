@@ -1,35 +1,35 @@
 import ballerina/net.http;
 import ballerina/io;
 
-@Description {value:"HTTP interface for the service."}
-endpoint http:ServiceEndpoint httpListener {
+// An endpoint is a network interface
+endpoint http:ServiceEndpoint listener {
     port:9090
 };
 
-@Description {
-    value:"Service binds to httpListener on path '/hello'."
-}
-service<http:Service> hello bind httpListener {
+// A service is a network-accessible API
+// Advertise on '/hello', port comes from listener endpoint
+service<http:Service> hello bind listener {
 
-    @Description {
-        value:"Resource accepts requests on path '/sayHello'."
-    }
+    // Service functions act as API resources
+    // A resource is an invocable API method
+    // 'caller' is the client invoking this resource 
     sayHello (endpoint caller, http:Request request) {
         http:Response response = {};
 
-        // Get request payload as a string
+        // Retrieve the client's request body
         var reqPayloadVar = request.getStringPayload();
 
         match reqPayloadVar {
             string reqPayload => {
                 // set the response payload
-                response.setStringPayload("Hello, " + reqPayload + "\n");
+                response.setStringPayload("Hello, "
+                    + reqPayload + "\n");
             }
             any | null => {
                 io:println("No payload found!");
             }
         }
-        // Send response back to caller.
+        // Send a response back to caller.
         _ = caller -> respond(response);
     }
 }
