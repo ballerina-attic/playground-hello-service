@@ -1,4 +1,4 @@
-# Ballerina Playground - Hello Service
+# Ballerina Playground - RESTful Service
  
  
  Sample Request 
