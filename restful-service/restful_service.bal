@@ -7,23 +7,25 @@ endpoint http:ServiceEndpoint listener {
 };
 
 // A service is a network-accessible API
-// Advertise on '/hello', port comes from listener endpoint
-service<http:Service> hello bind listener {
+// Advertise on '/greeting', port comes from listener endpoint
+@http:ServiceConfig {basePath:"/greeting"}
+service<http:Service> greeting bind listener {
 
-    // Service functions act as API resources
-    // A resource is an invocable API method
-    // 'caller' is the client invoking this resource 
-    sayHello (endpoint caller, http:Request request) {
+    // A resource is an invokable API method
+    // This resource only accepts HTTP POST requests
+    // 'caller' is the client invoking this resource
+    @http:ResourceConfig{
+        path: "/",  methods: ["POST"]
+    }
+    greet (endpoint caller, http:Request request) {
         http:Response response = {};
-
-        // Retrieve the client's request body
+        // Get the request payload as a string
         var reqPayloadVar = request.getStringPayload();
-
         match reqPayloadVar {
             string reqPayload => {
-                // set the response payload
+                // Set a string as the response body.
                 response.setStringPayload("Hello, "
-                    + reqPayload + "\n");
+                    + reqPayload + "!\n");
             }
             any | null => {
                 io:println("No payload found!");
