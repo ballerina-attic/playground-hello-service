@@ -1,4 +1,3 @@
-
 import ballerina/net.http;
 import ballerina/io;
 
@@ -11,13 +10,13 @@ endpoint http:ServiceEndpoint listener {
 // Advertise on '/hello', port comes from listener endpoint
 service<http:Service> hello bind listener {
 
-    // Service functions act as API resources
-    // A resource is an invocable API method
+    // A resource is an invokable API method
+    // Accessible on '/hello/sayHello
     // 'caller' is the client invoking this resource 
     sayHello (endpoint caller, http:Request request) {
         http:Response response = {};
         // set the response payload
-        response.setStringPayload("Hello Ballerina");
+        response.setStringPayload("Hello Ballerina!\n");
         // Send a response back to caller.
         _ = caller -> respond(response);
     }
