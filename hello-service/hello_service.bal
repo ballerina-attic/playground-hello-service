@@ -7,7 +7,7 @@ endpoint http:ServiceEndpoint listener {
 };
 
 // A service is a network-accessible API
-// Advertise on '/hello', port comes from listener endpoint
+// Advertised on '/hello', port comes from listener endpoint
 service<http:Service> hello bind listener {
 
     // A resource is an invokable API method
@@ -17,7 +17,8 @@ service<http:Service> hello bind listener {
         http:Response response = {};
         // set the response payload
         response.setStringPayload("Hello Ballerina!\n");
-        // Send a response back to caller.
+        // Send a response back to caller
+        // Errors that could occur are ignored using '_'
         _ = caller -> respond(response);
     }
 }
