@@ -1,7 +1,9 @@
 import ballerina/net.http;
 import ballerina/io;
 
-// An endpoint is a network interface
+
+// Network network-accessible endpoint
+// Listens on HTTP on port 9090
 endpoint http:ServiceEndpoint listener {
     port:9090
 };
@@ -10,9 +12,8 @@ endpoint http:ServiceEndpoint listener {
 // Advertise on '/hello', port comes from listener endpoint
 service<http:Service> hello bind listener {
 
-    // Service functions act as API resources
-    // A resource is an invocable API method
-    // 'caller' is the client invoking this resource 
+    // A resource is an invokable method of the service
+    // 'caller' is the external client that is invoking this resource
     sayHello (endpoint caller, http:Request request) {
         http:Response response = {};
 
