@@ -2,7 +2,7 @@ import ballerina/net.http;
 import ballerina/data.sql;
 
 // A ServiceEndpoint listens to HTTP request on port 9090
-endpoint http:ServiceEndpoint dataServiceEP {
+endpoint http:ServiceEndpoint listener {
     port:9090
 };
 
