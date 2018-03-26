@@ -28,6 +28,39 @@
     <packaging>pom</packaging>
 
     <name>Ballerina Guide - Playground Hello Service</name>
+
+     <scm>
+        <url>https://github.com/ballerina-guides/playground-hello-service.git</url>
+        <developerConnection>scm:git:https://github.com/ballerina-guides/playground-hello-service.git</developerConnection>
+        <connection>scm:git:https://github.com/ballerina-guides/playground-hello-service.git</connection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>wso2.releases</id>
+            <name>WSO2 Releases Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>wso2.snapshots</id>
+            <name>WSO2 Snapshot Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    
     <build>
         <plugins>
             <plugin>
