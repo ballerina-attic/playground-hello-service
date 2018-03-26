@@ -73,7 +73,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>playground-hello-service</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <descriptorRefs>
                                 <descriptorRef>guide-assembly</descriptorRef>
                             </descriptorRefs>
