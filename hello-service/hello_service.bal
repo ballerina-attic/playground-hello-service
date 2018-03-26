@@ -15,10 +15,10 @@ service<http:Service> hello bind listener {
     // 'caller' is the client invoking this resource 
     sayHello (endpoint caller, http:Request request) {
         http:Response response = {};
-        // set the response payload
+        //FIX  set the response payload
         response.setStringPayload("Hello Ballerina!\n");
         // Send a response back to caller
-        // Errors that could occur are ignored using '_'
+        // Errors  are ignored with '_'
         _ = caller -> respond(response);
     }
 }

@@ -2,14 +2,18 @@ import ballerina/net.http;
 import ballerina/io;
 
 // A ServiceEndpoint listens to HTTP request on port 9090
+// Represents how this service listens
 endpoint http:ServiceEndpoint httpListenerEP {
     port:9090
 };
 
 // A ClientEndpoint can be used to invoke an external services
+// client endpoint representas network-bound endpoint
 endpoint http:SimpleClientEndpoint timeServiceEP {
     url:"http://localhost:9095"
 };
+
+
 
 // A service is a network-accessible API
 // Advertise on '/time', port comes from listener endpoint
@@ -25,7 +29,7 @@ service<http:Service> timeInfo bind httpListenerEP {
     }
     getTime (endpoint caller, http:Request req) {
 
-        // Invoke the backend service through 'timeServiceEP' client endpoint
+        // Invoke the external service through 'timeServiceEP' client endpoint
         // by sending a HTTP GET request on path '/localtime'.
         // The response received for the GET request is assigned
         // to a http:Response and errors are ignored by using =?.
