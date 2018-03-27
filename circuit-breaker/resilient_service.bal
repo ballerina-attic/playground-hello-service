@@ -15,21 +15,20 @@ endpoint http:ServiceEndpoint listener {
 // OPEN circuits bypass endpoint and return error.
 endpoint http:ClientEndpoint legacyServiceResilientEP {
     circuitBreaker: {
+    // failures allowed
+        failureThreshold:0,
 
-                    // failures allowed
-                        failureThreshold:0,
+    // reset circuit to CLOSED state after timeout
+        resetTimeout:3000,
 
-                    // reset circuit to CLOSED state after timeout
-                        resetTimeout:3000,
+    // error codes that open the circuit
+        httpStatusCodes:[400, 404, 500]
+    },
 
-                    // error codes that open the circuit
-                        httpStatusCodes:[400, 404, 500]
-                    },
+    // URI of the remote service
+    targets: [{ uri: "http://localhost:9096"}],
 
-// URI of the remote service
-    targets: [{ uri: "http://localhost:9095"}],
-
-// Invocation timeout - independent of circuit
+    // Invocation timeout - independent of circuit
     endpointTimeout:6000
 };
 
