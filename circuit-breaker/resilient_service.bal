@@ -4,58 +4,73 @@ import ballerina/log;
 
 json previousRes;
 
-// Represents how this service listens on HTTP at port 9090
-endpoint http:ServiceEndpoint httpListenerEP {
+endpoint http:ServiceEndpoint listener {
     port:9090
 };
 
 
-// Represents a HTTP Client endpoint represents a network-bound HTTP endpoint that we can invoke.
-// Circuit breaker allows you to invoke such an endpoint in resilient manner.
-// If there are failures when invoking the endpoint, circuit breaker goes to open states
-// and prevent invoking the network bound endpoint for the subsequent requests.
+// Client endpoints represent remote network location
+// Circuit breaker resilient invocation of such an endpoint.
+// Circuit is in CLOSED state by default
+// Circuit goes to OPEN state when there are errors or timeouts
+// When the circuit is OPEN, it won't invoke the remote
+// endpoint. Rather it returns an error in which user has to handle.
 endpoint http:ClientEndpoint legacyServiceResilientEP {
     circuitBreaker: {
-                        failureThreshold:0, // allowed percentage of failures
-                        resetTimeout:3000,  // circuit opening time
-                        httpStatusCodes:[400, 404, 500] // http error codes can lead the service to go to open state
+                    // failures allowed
+                        failureThreshold:0,
+                    // max circuit open time
+                        resetTimeout:3000,
+                    // error codes to open the circuit
+                        httpStatusCodes:[400, 404, 500]
                     },
-    targets: [{ uri: "http://localhost:9095"}], // URI of the network bound service
-    endpointTimeout:6000    // maximum time that it waits for a response from the network bound service.
+// URI of the network bound service
+    targets: [{ uri: "http://localhost:9095"}],
+// Maximum time that it waits for a response
+// from the remote network location.
+    endpointTimeout:6000
 };
 
 
 @http:ServiceConfig {basePath:"/resilient/time"}
-service<http:Service> timeInfo bind httpListenerEP {
+service<http:Service> timeInfo bind listener {
 
     @http:ResourceConfig {
         methods:["GET"],
         path:"/"
     }
     getTime (endpoint caller, http:Request req) {
-        // Invoking the network-bound service by sending a HTTP GET request.
-        var response = legacyServiceResilientEP -> get("/legacy/localtime", {});
 
-        // Response coming from network-bound service can contain successful response or an error
-        // Hence we can have matching logic for each of the different type
+
+
+        var response = legacyServiceResilientEP
+                       -> get("/legacy/localtime", {});
+
+        // Match response for successful or failed messages.
         match response {
             http:Response res => {
                 if (res.statusCode == 200) {
-                    log:printInfo(">>> Legacy service invocation successful!");
+                    log:printInfo(">>> Remote service invocation successful!");
                     previousRes =? res.getJsonPayload();
                 } else {
-                    log:printInfo(">>> Error message received from legacy service.");
+                    // Remote endpoint returns and error.
+                    log:printInfo(">>> Error message received from remote service.");
                 }
                 _ = caller -> forward(res);
             }
             http:HttpConnectorError err => {
-                // When the circuit breaker is in open state, it won't allow any request to invoke the legacy service.
-                // Rather it returns an error and we can
+                // When circuit breaker is open, it suspends
+                // the invocation of the network endpoint and
+                // throws an error. This is the logic
+                // that you write to handle the such cases
+                // gracefully.
                 http:Response errResponse = {};
                 log:printInfo(">>> Circuit Breaker : Open State - "
-                            + "Legacy service invocation is prevented!");
+                            + "Remote service invocation is suspended!");
+                // Set Service Unavailable status code
                 errResponse.statusCode = 503;
-                json errJ = {status:"Upstream failure: " + err.message, cached_response:previousRes};
+                // Reply with a cached response.
+                json errJ = { CACHED_RESPONSE:previousRes };
                 errResponse.setJsonPayload(errJ);
                 _ = caller -> respond(errResponse);
             }

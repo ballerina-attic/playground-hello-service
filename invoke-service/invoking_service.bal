@@ -1,7 +1,7 @@
 import ballerina/net.http;
 import ballerina/io;
 
-endpoint http:ServiceEndpoint listener {                     // xxxxx
+endpoint http:ServiceEndpoint listener {
     port:9090
 };
 
@@ -37,7 +37,7 @@ service<http:Service> timeInfo bind listener {
         // json keys and objects do not require escaping
         // json objects can use variables and functions
         json payload = {
-                           From: "Ballerina",
+                           source: "Ballerina",
                            time: time
                        };
 
