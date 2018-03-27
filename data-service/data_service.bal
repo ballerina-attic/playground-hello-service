@@ -22,7 +22,7 @@ endpoint sql:Client customerDB {
 @http:ServiceConfig {
     basePath:"/"
 }
-service<http:Service> data_service bind dataServiceEP {
+service<http:Service> data_service bind listener {
 
     // A resource is an invokable API method
     // This resource only accepts HTTP GET requests on '/customer'
@@ -49,3 +49,4 @@ service<http:Service> data_service bind dataServiceEP {
         _ = caller -> respond(res);
     }
 }
+

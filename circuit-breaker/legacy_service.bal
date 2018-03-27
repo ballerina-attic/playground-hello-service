@@ -21,19 +21,19 @@ service<http:Service> legacy_time bind listener {
         http:Response response = {};
 
         if (counter % 5 == 0) {
-            io:println("Behavior : Slow");
+            io:println("Legacy Service : Behavior - Slow");
             runtime:sleepCurrentWorker(1000);
             counter = counter + 1;
         } else if (counter % 5 == 3) {
             counter = counter + 1;
             response.statusCode = 500;
-            io:println("Behavior : Faulty");
+            io:println("Legacy Service : Behavior - Faulty");
             json errorJ = {error: "Internal error occurred while processing the request."};
             response.setJsonPayload(errorJ);
             _ = caller -> respond(response);
             return;
         } else {
-            io:println("Behavior : Normal");
+            io:println("Legacy Service : Behavior - Normal");
             counter = counter + 1;
         }
 

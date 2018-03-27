@@ -1,14 +1,12 @@
 import ballerina/net.http;
 import ballerina/io;
 
-// A ServiceEndpoint listens to HTTP request on port 9090
-// Represents how this service listens
+// ServiceEndpoint represents how this service listens on HTTP at port 9090
 endpoint http:ServiceEndpoint httpListenerEP {
     port:9090
 };
 
-// A ClientEndpoint can be used to invoke an external services
-// client endpoint representas network-bound endpoint
+// Simple client endpoint represents a network-bound endpoint that we can invoke.
 endpoint http:SimpleClientEndpoint timeServiceEP {
     url:"http://localhost:9095"
 };

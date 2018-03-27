@@ -14,8 +14,8 @@ service<http:Service> hello bind listener {
     // Accessible on '/hello/sayHello
     // 'caller' is the client invoking this resource 
     sayHello (endpoint caller, http:Request request) {
+        // Create a response message to be sent to the caller
         http:Response response = {};
-        //FIX  set the response payload
         response.setStringPayload("Hello Ballerina!\n");
         // Send a response back to caller
         // Errors  are ignored with '_'
