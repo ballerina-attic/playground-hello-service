@@ -19,15 +19,20 @@ endpoint http:ServiceEndpoint listener {
 // Instead it returns an error in which user has to handle.
 endpoint http:ClientEndpoint legacyServiceResilientEP {
     circuitBreaker: {
+
         // failures allowed
         failureThreshold:0,
+
         // max circuit open time
         resetTimeout:3000,
+
         // error codes to open the circuit
         httpStatusCodes:[400, 404, 500]
     },
+
     // URI of the network bound service
     targets: [{ uri: "http://localhost:9095"}],
+
     // Maximum time that it waits for a response
     // from the remote network location.
     endpointTimeout:6000
@@ -45,6 +50,7 @@ service<http:Service> timeInfo bind listener {
 
         var response = legacyServiceResilientEP
                        -> get("/legacy/localtime", {});
+
         // Match response for successful or failed messages.
         match response {
             http:Response res => {
@@ -53,6 +59,7 @@ service<http:Service> timeInfo bind listener {
                     ">> Remote service invocation successful!");
                     previousRes =? res.getJsonPayload();
                 } else {
+
                     // Remote endpoint returns and error.
                     log:printInfo(
                     ">> Error message received from"
@@ -60,6 +67,7 @@ service<http:Service> timeInfo bind listener {
                 }
                 _ = caller -> forward(res);
             }
+
             http:HttpConnectorError err => {
                 // When circuit breaker is open, it suspends
                 // the invocation of the network endpoint and
@@ -68,7 +76,7 @@ service<http:Service> timeInfo bind listener {
                 // gracefully.
                 http:Response errResponse = {};
                 log:printInfo(
-                    ">> Circuit Breaker : OPEN - "
+                    ">> Circuit Breaker: OPEN - "
                     + "Remote service invocation is suspended!");
                 // Set Service unavailable status code
                 errResponse.statusCode = 503;
