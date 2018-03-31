@@ -8,33 +8,27 @@ endpoint http:ServiceEndpoint listener {
     port:9090
 };
 
-// Client endpoint with circuit breaker represents a remote
-// network location that you can invoke resiliently.
-// Circuit breaker is in CLOSED state by default.
-// An closed circuit  allows the requests to go through.
-// Circuit goes to OPEN state when there are errors or response
-// take more long time to arrive than the specified timeout.
-// When the circuit is OPEN, it doesn't invoke the remote
-// endpoint.
-// Instead it returns an error in which user has to handle.
+// Endpoint with circuit breaker can short circuit responses
+// under some conditions. Circuit flips to OPEN state when
+// errors or responses take longer than timeout.
+// OPEN circuits bypass endpoint and return error.
 endpoint http:ClientEndpoint legacyServiceResilientEP {
     circuitBreaker: {
 
-        // failures allowed
-        failureThreshold:0,
+                    // failures allowed
+                        failureThreshold:0,
 
-        // max circuit open time
-        resetTimeout:3000,
+                    // reset circuit to CLOSED state after timeout
+                        resetTimeout:3000,
 
-        // error codes to open the circuit
-        httpStatusCodes:[400, 404, 500]
-    },
+                    // error codes that open the circuit
+                        httpStatusCodes:[400, 404, 500]
+                    },
 
-    // URI of the network bound service
+// URI of the remote service
     targets: [{ uri: "http://localhost:9095"}],
 
-    // Maximum time that it waits for a response
-    // from the remote network location.
+// Invocation timeout - independent of circuit
     endpointTimeout:6000
 };
 
@@ -53,6 +47,8 @@ service<http:Service> timeInfo bind listener {
 
         // Match response for successful or failed messages.
         match response {
+
+        // Circuit breaker not tripped, process response
             http:Response res => {
                 if (res.statusCode == 200) {
                     log:printInfo(
@@ -63,23 +59,21 @@ service<http:Service> timeInfo bind listener {
                     // Remote endpoint returns and error.
                     log:printInfo(
                     ">> Error message received from"
-                        + "remote service.");
+                    + "remote service.");
                 }
                 _ = caller -> forward(res);
             }
 
+        // Circuit breaker tripped and generates error
             http:HttpConnectorError err => {
-                // When circuit breaker is open, it suspends
-                // the invocation of the network endpoint and
-                // throws an error. This is the logic
-                // that we handle the such cases
-                // gracefully.
                 http:Response errResponse = {};
                 log:printInfo(
-                    ">> Circuit Breaker: OPEN - "
-                    + "Remote service invocation is suspended!");
-                // Set Service unavailable status code
+                ">> Circuit Breaker: OPEN - "
+                + "Remote service invocation is suspended!");
+
+                // Inform client service is unavailable
                 errResponse.statusCode = 503;
+
                 // Use the last successful response
                 json errJ = { CACHED_RESPONSE:previousRes };
                 errResponse.setJsonPayload(errJ);
@@ -89,7 +83,4 @@ service<http:Service> timeInfo bind listener {
 
     }
 }
-
-
-
 
