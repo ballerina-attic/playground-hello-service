@@ -1,6 +1,7 @@
 import ballerina/net.http;
 import ballerina/io;
 import ballerina/log;
+import ballerina/time;
 
 json previousRes;
 
@@ -8,7 +9,7 @@ endpoint http:ServiceEndpoint listener {
     port:9090
 };
 
-// Endpoint with circuit breaker can short circuit responses
+// Endpoint with circuit breaker(CB) can short circuit responses
 // under some conditions. Circuit flips to OPEN state when
 // errors or responses take longer than timeout.
 // OPEN circuits bypass endpoint and return error.
@@ -51,15 +52,16 @@ service<http:Service> timeInfo bind listener {
         // Circuit breaker not tripped, process response
             http:Response res => {
                 if (res.statusCode == 200) {
-                    log:printInfo(
-                    ">> Remote service invocation successful!");
+                    io:println(getTimeStamp()
+                               + " >> CB : CLOSE - " +
+                        " Remote service is invoked successfully. "
+                               );
                     previousRes =? res.getJsonPayload();
                 } else {
-
                     // Remote endpoint returns and error.
-                    log:printInfo(
-                    ">> Error message received from"
-                    + "remote service.");
+                    io:println( getTimeStamp()
+                                   +" >> Error message received"
+                     + "from remote service");
                 }
                 _ = caller -> forward(res);
             }
@@ -67,9 +69,9 @@ service<http:Service> timeInfo bind listener {
         // Circuit breaker tripped and generates error
             http:HttpConnectorError err => {
                 http:Response errResponse = {};
-                log:printInfo(
-                ">> Circuit Breaker: OPEN - "
-                + "Remote service invocation is suspended!");
+                io:println(getTimeStamp() + " >> CB: OPEN -"
+                       + "Remote service invocation is suspended!"
+                       + getTimeStamp());
 
                 // Inform client service is unavailable
                 errResponse.statusCode = 503;
@@ -80,7 +82,16 @@ service<http:Service> timeInfo bind listener {
                 _ = caller -> respond(errResponse);
             }
         }
-
     }
 }
+
+
+// Function to get the current time in custom format.
+function getTimeStamp() returns (string) {
+        time:Time currentTime = time:currentTime();
+        string timeStamp = currentTime.format("HH:mm:ss.SSSZ");
+        return timeStamp;
+}
+
+
 
