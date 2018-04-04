@@ -3,7 +3,7 @@
 ### Sample requests: 
 
 
-Get time 
+Get quote 
 ``` 
 
 curl http://localhost:9090/quote
