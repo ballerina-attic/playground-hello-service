@@ -19,7 +19,7 @@ endpoint http:ClientEndpoint legacyServiceResilientEP {
       // reset circuit to CLOSED state after timeout
       resetTimeout:3000,
       // error codes that open the circuit
-      statusCodes:[400, 404, 500]
+      httpStatusCodes:[400, 404, 500]
   },
   // URI of the remote service
   targets: [{ uri: "http://localhost:9095"}],
