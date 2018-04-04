@@ -1,4 +1,4 @@
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/io;
 import ballerina/log;
 import ballerina/time;
@@ -27,7 +27,7 @@ endpoint http:ClientEndpoint legacyServiceResilientEP {
                     },
 
 // URI of the remote service
-    targets: [{ uri: "http://localhost:9095"}],
+    targets: [{ url: "http://localhost:9095"}],
 
 // Invocation timeout - independent of circuit
     endpointTimeout:6000
@@ -52,16 +52,14 @@ service<http:Service> timeInfo bind listener {
         // Circuit breaker not tripped, process response
             http:Response res => {
                 if (res.statusCode == 200) {
-                    io:println(getTimeStamp()
-                               + " >> CB : CLOSE - " +
+                    io:println(" >> CB : CLOSE - " +
                         " Remote service is invoked successfully. "
                                );
                     previousRes =? res.getJsonPayload();
                 } else {
                     // Remote endpoint returns and error.
-                    io:println( getTimeStamp()
-                                   +" >> Error message received"
-                     + "from remote service");
+                    io:println(" >> Error message received"
+                     + " from remote service");
                 }
                 _ = caller -> forward(res);
             }
@@ -69,9 +67,8 @@ service<http:Service> timeInfo bind listener {
         // Circuit breaker tripped and generates error
             http:HttpConnectorError err => {
                 http:Response errResponse = {};
-                io:println(getTimeStamp() + " >> CB: OPEN -"
-                       + "Remote service invocation is suspended!"
-                       + getTimeStamp());
+                io:println(" >> CB: OPEN -"
+                       + "Remote service invocation is suspended!");
 
                 // Inform client service is unavailable
                 errResponse.statusCode = 503;
@@ -83,14 +80,6 @@ service<http:Service> timeInfo bind listener {
             }
         }
     }
-}
-
-
-// Function to get the current time in custom format.
-function getTimeStamp() returns (string) {
-        time:Time currentTime = time:currentTime();
-        string timeStamp = currentTime.format("HH:mm:ss.SSSZ");
-        return timeStamp;
 }
 
 
