@@ -23,7 +23,7 @@ endpoint http:ClientEndpoint legacyServiceResilientEP {
                         resetTimeout:3000,
 
                     // error codes that open the circuit
-                        httpStatusCodes:[400, 404, 500]
+                        statusCodes:[400, 404, 500]
                     },
 
 // URI of the remote service

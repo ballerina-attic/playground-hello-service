@@ -1,4 +1,4 @@
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/io;
 import ballerina/time;
 import ballerina/runtime;
@@ -19,11 +19,17 @@ service<http:Service> legacy_time bind listener {
     }
     getTime (endpoint caller, http:Request request) {
         http:Response response = {};
+        time:Time currentTime = time:currentTime();
+        string customTimeString = currentTime.format("yyyy-MM-dd'T'HH:mm:ss");
+
+        json timeJ = { currentTime : customTimeString };
 
         if (counter % 5 == 0) {
             io:println("Legacy Service : Behavior - Slow");
             runtime:sleepCurrentWorker(1000);
             counter = counter + 1;
+            response.setJsonPayload(timeJ);
+            _ = caller -> respond(response);
         } else if (counter % 5 == 3) {
             counter = counter + 1;
             response.statusCode = 500;
@@ -31,17 +37,11 @@ service<http:Service> legacy_time bind listener {
             json errorJ = {error: "Internal error occurred while processing the request."};
             response.setJsonPayload(errorJ);
             _ = caller -> respond(response);
-            return;
         } else {
             io:println("Legacy Service : Behavior - Normal");
             counter = counter + 1;
+            response.setJsonPayload(timeJ);
+            _ = caller -> respond(response);
         }
-
-        time:Time currentTime = time:currentTime();
-        string customTimeString = currentTime.format("yyyy-MM-dd'T'HH:mm:ss");
-
-        json timeJ = {currentTime : customTimeString };
-        response.setJsonPayload(timeJ);
-        _ = caller -> respond(response);
     }
 }
