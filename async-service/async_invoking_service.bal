@@ -55,8 +55,8 @@ service<http:Service> asyncInvoker bind listener {
             http:Response resp => {
                 json responseJ =? resp.getJsonPayload();
                 io:println(getTimeStamp()
-                           + " >> Response "
-                + responseJ.toString());
+                    + " >> Response "
+                    + responseJ.toString());
                 _ = caller -> forward(resp);
             }
             http:HttpConnectorError err => {
