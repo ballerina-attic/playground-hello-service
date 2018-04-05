@@ -16,22 +16,24 @@ service<http:Service> asyncInvoker bind listener {
         methods:["GET"],
         path:"/"
     }
-    getTime (endpoint caller, http:Request req) {
-        endpoint http:SimpleClientEndpoint nasdaqQuoteServiceEP {
+    getQuote (endpoint caller, http:Request req) {
+        endpoint http:SimpleClientEndpoint nasdaqServiceEP {
             url:"http://localhost:9095"
         };
 
         io:println(getTimeStamp()
-                   + " >> Invoking service async...");
-        // Invoke remote service asynchronously and
-        // immediately continue without waiting for a response
+                   + " >> Invoking service asynchrnounsly...");
+        // 'async' keyword allows you to invoke a function or
+        // client connector action asynchronously.
+        // Here we Invoke a remote service asynchronously and
+        // immediately continue without waiting for a response.
         future<http:Response | http:HttpConnectorError>
         f1
-            = async nasdaqQuoteServiceEP
+            = async nasdaqServiceEP
                             -> get("/nasdaq/quote/GOOG", {});
         io:println(getTimeStamp()
-               + " >> Service invocation completed..."
-               + " proceed without waiting for a response.");
+               + " >> Invocation completed!"
+               + " Proceed without blocking for a response.");
 
 
         // Mimic the workload of the main worker with a loop
@@ -45,9 +47,9 @@ service<http:Service> asyncInvoker bind listener {
 
         io:println(getTimeStamp()
                + " >> Check for response availability...");
+
         // Work completed!. Check for the availability of the
         // response and block till it is available.
-
         var response = await f1;
         io:println(getTimeStamp()
                + " >> Response available! ");
