@@ -15,17 +15,9 @@ service<http:Service> time bind listener {
     }
     sayHello (endpoint caller, http:Request request) {
         http:Response response = {};
-
-
-        json googQuote = {quote_symbol : "GOOG",
-                         name: "Alphabet Inc.",
-                         price: 1013.41,
-                         closing_time: "April 3 4:00PM EDT",
-                         source: "NASDAQ"};
-
-
+        string googQuote = "GOOG, Alphabet Inc., 1013.41";
         runtime:sleepCurrentWorker(1000);
-        response.setJsonPayload(googQuote);
+        response.setStringPayload(googQuote);
         _ = caller -> respond(response);
     }
 }
