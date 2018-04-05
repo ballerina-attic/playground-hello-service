@@ -38,7 +38,7 @@ service<http:Service> legacy_time bind listener {
         }
 
         time:Time currentTime = time:currentTime();
-        string customTimeString = currentTime.format("yyyy-MM-dd'T'HH:mm:ss");
+        string customTimeString = currentTime.format("HH:mm:ss");
 
         json timeJ = {currentTime : customTimeString };
         response.setJsonPayload(timeJ);
