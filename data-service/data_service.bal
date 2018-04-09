@@ -1,5 +1,5 @@
-import ballerina/net.http;
-import ballerina/data.sql;
+import ballerina/http;
+import ballerina/sql;
 
 endpoint http:ServiceEndpoint listener {
     port:9090
@@ -19,7 +19,7 @@ service<http:Service> data_service bind listener {
 
         // Endpoints can connect to dbs with SQL connector
         endpoint sql:Client customerDB {
-            database:sql:DB.H2_FILE,
+            database:sql:DB_H2_FILE,
             host:"./",
             port:10,
             name:"CUSTOMER_DB",
@@ -30,15 +30,15 @@ service<http:Service> data_service bind listener {
 
         // Invoke 'select' command against remote database
         // table primitive type represents a set of records
-        table dt =? customerDB -> select(
+        var retDt = customerDB -> select(
                                   "SELECT * FROM CUSTOMER",
                                   null,
                                   null);
-
+        table dt = check retDt;
         // tables can be cast to JSON and XML
-        json response =? <json>dt;
+        json response = check <json>dt;
 
-        http:Response res = {};
+        http:Response res = new;
         res.setJsonPayload(response);
         _ = caller -> respond(res);
     }

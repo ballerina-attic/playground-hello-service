@@ -1,4 +1,4 @@
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/io;
 
 
@@ -13,11 +13,19 @@ endpoint http:SimpleClientEndpoint timeServiceEP {
 
 function main (string[] args) {
 
-    http:Response response =? timeServiceEP -> get("/resilient/time", {});
+    var response =  timeServiceEP -> get("/resilient/time", new);
 
-    string s =? response.getStringPayload();
+    match response {
+        http:Response res => {
+            string s = check res.getStringPayload();
+            io:println("Response : " + s);
+        }
+        http:HttpConnectorError err => {
+            io:println("Error : " + err.message);
+        }
+    }
 
-    io:println("Response : " + s);
+
 
 
 

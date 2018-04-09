@@ -18,7 +18,7 @@ service<http:Service> hello bind listener {
     sayHello (endpoint caller, http:Request request) {
 
         // Create object to carry data back to caller
-        http:Response response = {};
+        http:Response response = new;
 
         // Objects and structs can have function calls
         response.setStringPayload("Hello Ballerina!\n");

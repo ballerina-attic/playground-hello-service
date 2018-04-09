@@ -1,4 +1,4 @@
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/io;
 
 @Description {value:"Attributes associated with the service endpoint is defined here."}
@@ -7,7 +7,7 @@ endpoint http:ServiceEndpoint httpListenerEP {
 };
 
 endpoint http:ClientEndpoint googleMapGeoEP {
-    targets: [{uri: "https://maps.googleapis.com"}]
+    targets: [{url: "https://maps.googleapis.com"}]
 };
 
 
@@ -21,19 +21,19 @@ service<http:Service> geocodeService bind httpListenerEP {
         path:"/coordinates"
     }
     getGeoCode (endpoint caller, http:Request req) {
-        http:Response res = {};
+        http:Response res = new;
         var latlngQueryParams = req.getQueryParams();
         var latlng = <string> latlngQueryParams.latlng;
 
         string resourceURL = string `/maps/api/geocode/json?latlng={{latlng}}`;
-        var clientResponse = googleMapGeoEP -> get (resourceURL, {});
+        var clientResponse = googleMapGeoEP -> get (resourceURL, new);
 
         match clientResponse {
             http:Response response => {
                 _ = caller -> forward(response);
             }
             http:HttpConnectorError err => {
-                http:Response errorRes = {};
+                http:Response errorRes = new;
                 errorRes.statusCode = 500;
                 errorRes.setStringPayload(err.message);
                 _ = caller -> respond(errorRes);

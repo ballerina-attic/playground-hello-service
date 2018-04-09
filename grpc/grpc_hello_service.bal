@@ -1,10 +1,10 @@
 import ballerina/io;
-import ballerina/net.grpc;
+import ballerina/grpc;
 
 // Server endpoint configuration
 endpoint grpc:Service ep {
     host:"localhost",
-    port:9090``
+    port:9090
 };
 
 @grpc:serviceConfig {generateClientConnector:true}

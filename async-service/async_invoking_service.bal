@@ -28,7 +28,7 @@ service<http:Service> asyncInvoker bind listener {
         future<http:Response | http:HttpConnectorError>
         f1
             = async nasdaqQuoteServiceEP
-                            -> get("/nasdaq/quote/GOOG", {});
+                            -> get("/nasdaq/quote/GOOG", new);
         io:println(getTimeStamp()
                + " >> Service invocation completed..."
                + " proceed without waiting for a response.");
@@ -53,10 +53,10 @@ service<http:Service> asyncInvoker bind listener {
                + " >> Response available! ");
         match response {
             http:Response resp => {
-                json responseJ =? resp.getJsonPayload();
+                json responseJ = check resp.getJsonPayload();
                 io:println(getTimeStamp()
-                    + " >> Response "
-                    + responseJ.toString());
+                        + " >> Response "
+                        + responseJ.toString() but {() => ""});
                 _ = caller -> forward(resp);
             }
             http:HttpConnectorError err => {

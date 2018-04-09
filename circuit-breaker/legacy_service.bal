@@ -1,4 +1,4 @@
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/io;
 import ballerina/time;
 import ballerina/runtime;
@@ -18,7 +18,7 @@ service<http:Service> legacy_time bind listener {
         path: "/localtime",  methods: ["GET"]
     }
     getTime (endpoint caller, http:Request request) {
-        http:Response response = {};
+        http:Response response = new;
 
         if (counter % 5 == 0) {
             io:println("Legacy Service : Behavior - Slow");
@@ -30,7 +30,7 @@ service<http:Service> legacy_time bind listener {
             io:println("Legacy Service : Behavior - Faulty");
             response.setStringPayload("Internal error occurred while processing the request.");
             _ = caller -> respond(response);
-            return;
+            done;
         } else {
             io:println("Legacy Service : Behavior - Normal");
             counter = counter + 1;

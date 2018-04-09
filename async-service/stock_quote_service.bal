@@ -14,7 +14,7 @@ service<http:Service> time bind listener {
         path: "/GOOG",  methods: ["GET"]
     }
     sayHello (endpoint caller, http:Request request) {
-        http:Response response = {};
+        http:Response response = new;
 
 
         json googQuote = {quote_symbol : "GOOG",

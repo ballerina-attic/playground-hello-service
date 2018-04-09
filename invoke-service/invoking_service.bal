@@ -1,4 +1,4 @@
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/io;
 
 endpoint http:ServiceEndpoint listener {
@@ -24,14 +24,14 @@ service<http:Service> timeInfo bind listener {
 
         // Invoke 'get' resource at timeServiceEP endpoint
         // -> indicates request is sent over the network
-        // =? either assigns response or if there is an error
+        // '= check' either assigns response or if there is an error
         //    then generates a function error
-        http:Response response =?
-             timeServiceEP -> get("/localtime", {});
+        var resp = timeServiceEP -> get("/localtime", new);
+        http:Response response = check resp;
 
         // json and xml are primitive data types!
         // The '.' syntax is used for invoking local functions
-        json time =? response.getJsonPayload();
+        json time = check response.getJsonPayload();
 
         // json objects can be defined inline
         // json keys and objects do not require escaping

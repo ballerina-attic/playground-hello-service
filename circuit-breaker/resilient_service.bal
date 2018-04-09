@@ -1,4 +1,4 @@
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/io;
 
 string previousRes;
@@ -14,7 +14,10 @@ endpoint http:ServiceEndpoint listener {
 endpoint http:ClientEndpoint legacyServiceResilientEP {
 
   circuitBreaker: {
- 
+      rollingWindow: {
+        timeWindow:10000,
+        bucketSize:2000
+      },
       // failures allowed
       failureThreshold:0,
  
@@ -26,7 +29,7 @@ endpoint http:ClientEndpoint legacyServiceResilientEP {
   },
 
   // URI of the remote service
-  targets: [{ uri: "http://localhost:9095"}],
+  targets: [{ url: "http://localhost:9095"}],
  
   // Invocation timeout - independent of circuit
   endpointTimeout:6000
@@ -45,7 +48,7 @@ service<http:Service> timeInfo bind listener {
   getTime (endpoint caller, http:Request req) {
 
     var response = legacyServiceResilientEP
-       -> get("/legacy/localtime", {});
+       -> get("/legacy/localtime", new);
 
     // Match response for successful or failed messages.
     match response {
@@ -57,7 +60,7 @@ service<http:Service> timeInfo bind listener {
             string str => { 
               previousRes = str; 
             }
-            error | null err => { 
+            error | () err => {
               io:println("Error received from remote service"); 
             }
           }
@@ -66,14 +69,14 @@ service<http:Service> timeInfo bind listener {
           // Remote endpoint returns and error.
           io:println("Error received from remote service");
         }
-        http:Response okResponse = {};
+        http:Response okResponse = new;
         okResponse.statusCode = 200;
         _ = caller -> respond(okResponse);
       }
 
       // Circuit breaker tripped and generates error
       http:HttpConnectorError err => {
-        http:Response errResponse = {};
+        http:Response errResponse = new;
         // Use the last successful response
         io:println("Circuit open, using cached data");
 
