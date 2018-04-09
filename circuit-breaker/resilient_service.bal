@@ -22,7 +22,7 @@ endpoint http:ClientEndpoint legacyServiceResilientEP {
       resetTimeout:3000,
  
       // error codes that open the circuit
-      httpStatusCodes:[400, 404, 500]
+      statusCodes:[400, 404, 500]
   },
 
   // URI of the remote service
@@ -58,14 +58,13 @@ service<http:Service> timeInfo bind listener {
               previousRes = str; 
             }
             error | null err => { 
-              io:println("Error received from remote service."); 
+              io:println("Error received from remote service"); 
             }
           }
-          io:println("Remote service OK. Data received: "+
-                previousRes);
+          io:println("Remote service OK, data received");
         } else {  
           // Remote endpoint returns and error.
-          io:println("Error received from remote service.");
+          io:println("Error received from remote service");
         }
         http:Response okResponse = {};
         okResponse.statusCode = 200;
@@ -76,7 +75,7 @@ service<http:Service> timeInfo bind listener {
       http:HttpConnectorError err => {
         http:Response errResponse = {};
         // Use the last successful response
-        io:println("Using cached value: " + previousRes);
+        io:println("Circuit open, using cached data");
 
         // Inform client service is unavailable
         errResponse.statusCode = 503;
