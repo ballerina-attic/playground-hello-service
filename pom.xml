@@ -21,13 +21,46 @@
     <parent>
         <groupId>org.ballerinalang.guides</groupId>
         <artifactId>guides-parent</artifactId>
-        <version>0.964.1-SNAPSHOT</version>
+        <version>0.970.0-alpha1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>playground-hello-service</artifactId>
     <packaging>pom</packaging>
 
     <name>Ballerina Guide - Playground Hello Service</name>
+
+     <scm>
+        <url>https://github.com/ballerina-guides/playground-hello-service.git</url>
+        <developerConnection>scm:git:https://github.com/ballerina-guides/playground-hello-service.git</developerConnection>
+        <connection>scm:git:https://github.com/ballerina-guides/playground-hello-service.git</connection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>wso2.releases</id>
+            <name>WSO2 Releases Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>wso2.snapshots</id>
+            <name>WSO2 Snapshot Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    
     <build>
         <plugins>
             <plugin>
@@ -40,7 +73,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>playground-hello-service</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <descriptorRefs>
                                 <descriptorRef>guide-assembly</descriptorRef>
                             </descriptorRefs>
