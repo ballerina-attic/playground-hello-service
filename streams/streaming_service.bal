@@ -42,9 +42,9 @@ function resultEventListenerFn1 (Result result) {
 }
 
 function resultEventListenerFn2 (Result result) {
-    io:println("Result Event Listener 2: Average stock price "
-               + result.count + " updates for "
-               + result.symbol );
+    io:println("Result Event Listener 2: Average stock price : "
+               + result.average + " of "
+               + result.symbol + " within 5s.");
 }
 
 
@@ -66,7 +66,8 @@ service<http:Service> StoreService bind {} {
 
         string stockSymbol = "GOOG";
 
-        io:println("Stock Info : " + stockSymbol + " - " + stockPrice);
+        io:println("Stock Info : " + stockSymbol + " - "
+                      + stockPrice);
 
         StockUpdate stockUpdate = {symbol:stockSymbol,
                                       price:stockPrice};
@@ -76,7 +77,5 @@ service<http:Service> StoreService bind {} {
         res.statusCode = 202;
         _ = conn -> respond(res);
     }
-
-
 
 }

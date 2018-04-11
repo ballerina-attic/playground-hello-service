@@ -3,11 +3,6 @@
 import ballerina/http;
 import ballerina/io;
 
-// A service endpoint represents a listener
-//endpoint http:ServiceEndpoint listener {
-//    port:9090
-//};
-
 // A service is a network-accessible API
 // Advertised on '/hello', port comes from listener endpoint
 service<http:Service> hello bind {} {
