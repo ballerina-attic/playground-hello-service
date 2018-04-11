@@ -13,6 +13,9 @@ type Result {
   float average;
 };
 
+future f1 = async initStockStreamConsumer();
+
+
 stream<StockUpdate> inStream;
 
 function initStockStreamConsumer () {
@@ -54,7 +57,6 @@ function resultEventListenerFn2 (Result result) {
 }
 service<http:Service> StoreService bind {} {
 
-    future f1 = async initStockStreamConsumer();
 
     @http:ResourceConfig {
         methods:["POST"],
@@ -66,15 +68,14 @@ service<http:Service> StoreService bind {} {
 
         string stockSymbol = "GOOG";
 
-        io:println("Stock Info : " + stockSymbol + " - "
-                      + stockPrice);
+        //io:println("Stock Info : " + stockSymbol + " - "
+        //              + stockPrice);
 
         StockUpdate stockUpdate = {symbol:stockSymbol,
                                       price:stockPrice};
         inStream.publish(stockUpdate);
 
-        http:Response res = new;
-        res.statusCode = 202;
+        http:Response res = {statusCode:202};
         _ = conn -> respond(res);
     }
 
