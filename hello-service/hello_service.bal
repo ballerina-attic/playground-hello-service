@@ -10,21 +10,21 @@ import ballerina/io;
 // is a connector in the `http` package.
 service<http:Service> hello bind {} {
 
-    // A resource is an invokable API method
-    // Accessible at '/hello/sayHello’
-    // 'caller' is the client invoking this resource
-    sayHello (endpoint caller, http:Request request) {
+  // A resource is an invokable API method
+  // Accessible at '/hello/sayHello’
+  // 'caller' is the client invoking this resource
+  sayHello (endpoint caller, http:Request request) {
 
-      // Create object to carry data back to caller
-      http:Response response = new;
+    // Create object to carry data back to caller
+    http:Response response = new;
 
-      // Objects have function calls
-      response.setStringPayload("Hello Ballerina!\n");
+    // Objects have function calls
+    response.setStringPayload("Hello Ballerina!\n");
 
-      // Send a response back to caller
-      // Errors are ignored with '_'
-      // ‘->’ is a synchronous network-bound call
+    // Send a response back to caller
+    // Errors are ignored with '_'
+    // ‘->’ is a synchronous network-bound call
 
-      _ = caller -> respond(response);
-    }
+    _ = caller -> respond(response);
+  }
 }
