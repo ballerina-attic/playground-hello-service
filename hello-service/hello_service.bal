@@ -1,30 +1,34 @@
-// Packages contain functions, annotations and
-// connectors. This package is referenced by
-// ‘http’ namespace in the code body.
+// Packages contain functions, annotations and connectors.
+// This package is referenced by ‘http’ namespace in the code
+// body.
 import ballerina/http;
 import ballerina/io;
 
-// A service is a network-accessible API. This
-// service accessible at '/hello', and bound to a
-// default listener on port 9090. `http:Service`
-// is a connector in the `http` package.
+// Listener endpoint which runs on port 9090, that a service
+// binds to.
+endpoint http:Listener listener {
+  port:9090
+};
+
+// A service is a network-accessible API. This service
+// is accessible at '/hello', and bound to a the listener.
+// `http:Service`is a connector in the `http` package.
 service<http:Service> hello bind {} {
 
-  // A resource is an invokable API method
-  // Accessible at '/hello/sayHello’
-  // 'caller' is the client invoking this resource
+  // A resource is an invokable API method.
+  // Accessible at '/hello/sayHello’.
+  // 'caller' is the client invoking this resource.
   sayHello (endpoint caller, http:Request request) {
 
-    // Create object to carry data back to caller
+    // Create object to carry data back to caller.
     http:Response response = new;
 
-    // Objects have function calls
+    // Objects have function calls.
     response.setStringPayload("Hello Ballerina!\n");
 
-    // Send a response back to caller
-    // Errors are ignored with '_'
-    // ‘->’ is a synchronous network-bound call
-
+    // Send a response back to caller.
+    // Errors are ignored with '_'.
+    // ‘->’ is a synchronous network-bound call.
     _ = caller -> respond(response);
   }
 }
