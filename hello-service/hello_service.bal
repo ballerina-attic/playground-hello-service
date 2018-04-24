@@ -13,7 +13,7 @@ endpoint http:Listener listener {
 // A service is a network-accessible API. This service
 // is accessible at '/hello', and bound to a the listener.
 // `http:Service`is a connector in the `http` package.
-service<http:Service> hello bind {} {
+service<http:Service> hello bind listener {
 
   // A resource is an invokable API method.
   // Accessible at '/hello/sayHello’.
@@ -24,7 +24,7 @@ service<http:Service> hello bind {} {
     http:Response response = new;
 
     // Objects have function calls.
-    response.setStringPayload("Hello Ballerina!\n");
+    response.setTextPayload("Hello Ballerina!\n");
 
     // Send a response back to caller.
     // Errors are ignored with '_'.
