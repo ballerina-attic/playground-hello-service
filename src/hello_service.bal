@@ -4,16 +4,11 @@
 import ballerina/http;
 import ballerina/io;
 
-// Listener endpoint which runs on port 9090, that a service
-// binds to.
-endpoint http:Listener listener {
-  port:9090
-};
-
 // A service is a network-accessible API. This service
-// is accessible at '/hello', and bound to a the listener.
-// `http:Service`is a connector in the `http` package.
-service<http:Service> hello bind listener {
+// is accessible at '/hello', and bound to a the listener on
+// port 9090. `http:Service`is a connector in the `http`
+// package.
+service<http:Service> hello bind { port: 9090 } {
 
   // A resource is an invokable API method.
   // Accessible at '/hello/sayHello’.
