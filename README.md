@@ -16,7 +16,7 @@ greeting message.
 
 ## Developing the service 
 
-**This is a Ballerina playground example. You can try it at  [ballerina.io](https://ballerina.io).**
+**This is a Ballerina playground example. You can try it at [ballerina.io](https://ballerina.io).**
 
 ### Invoking the RESTful service  
 
