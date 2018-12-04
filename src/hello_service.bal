@@ -7,7 +7,7 @@ import ballerina/io;
 // at '/hello', and bound to a listener on port 9090.
 service hello on new http:Listener(9090) {
 
-  // Resource is called by the listener. This resource accessed
+  // A resource is called by the listener. This resource accessed
   // at '/hello/sayHello’. `caller` is the client calling us.
   resource function sayHello(http:Caller caller, http:Request request) {
 
