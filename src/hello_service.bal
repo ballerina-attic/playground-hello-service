@@ -13,7 +13,7 @@ service hello on new http:Listener(9090) {
   // attached. This resource is accessed at '/hello/sayHello’ and
   // `caller` is the client calling us.
   resource function sayHello(http:Caller caller,
-                             http:Request request) {
+                             http:Request request) returns error? {
 
     // Create an object to carry data back to the caller.
     http:Response response = new;
@@ -23,6 +23,6 @@ service hello on new http:Listener(9090) {
 
     // Send a response to the caller. Ignore errors with `_`.
     // ‘->’ is a synchronous network-bound call.
-    _ = caller -> respond(response);
+    _ = check caller -> respond(response);
   }
 }
